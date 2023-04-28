@@ -1,0 +1,19 @@
+2023-04-28 12:06:33,446:INFO:samir VS ammar:Match Started
+2023-04-28 12:06:34,345:DEBUG:samir VS ammar:samir play {'tile': {'N': True, 'E': True, 'S': True, 'W': False, 'item': 19}, 'gate': 'B', 'new_position': 7}
+2023-04-28 12:06:34,912:DEBUG:samir VS ammar:ammar play {'tile': {'N': False, 'E': False, 'S': True, 'W': True, 'item': None}, 'gate': 'K', 'new_position': 41}
+2023-04-28 12:06:35,478:DEBUG:samir VS ammar:samir play {'tile': {'N': True, 'E': True, 'S': False, 'W': False, 'item': 12}, 'gate': 'A', 'new_position': 13}
+2023-04-28 12:06:35,479:WARNING:samir VS ammar:This is a Bad Move. Your new_position is unreachable
+2023-04-28 12:06:36,044:DEBUG:samir VS ammar:samir play {'tile': {'N': True, 'E': True, 'S': False, 'W': False, 'item': 12}, 'gate': 'K', 'new_position': 0}
+2023-04-28 12:06:36,611:DEBUG:samir VS ammar:ammar play {'tile': {'N': True, 'E': False, 'S': True, 'W': False, 'item': None}, 'gate': 'B', 'new_position': 48}
+2023-04-28 12:06:37,178:DEBUG:samir VS ammar:samir play {'tile': {'N': True, 'E': False, 'S': True, 'W': False, 'item': None}, 'gate': 'B', 'new_position': 7}
+2023-04-28 12:06:37,745:DEBUG:samir VS ammar:ammar play {'tile': {'N': False, 'E': True, 'S': True, 'W': False, 'item': 16}, 'gate': 'A', 'new_position': 41}
+2023-04-28 12:06:38,312:DEBUG:samir VS ammar:samir play {'tile': {'N': True, 'E': False, 'S': True, 'W': False, 'item': None}, 'gate': 'K', 'new_position': 14}
+2023-04-28 12:06:38,878:DEBUG:samir VS ammar:ammar play {'tile': {'N': True, 'E': False, 'S': True, 'W': False, 'item': None}, 'gate': 'L', 'new_position': 34}
+2023-04-28 12:06:39,445:DEBUG:samir VS ammar:samir play {'tile': {'N': False, 'E': True, 'S': False, 'W': True, 'item': None}, 'gate': 'K', 'new_position': 15}
+2023-04-28 12:06:40,012:DEBUG:samir VS ammar:ammar play {'tile': {'N': True, 'E': True, 'S': False, 'W': True, 'item': 18}, 'gate': 'C', 'new_position': 41}
+2023-04-28 12:06:40,578:DEBUG:samir VS ammar:samir play {'tile': {'N': True, 'E': True, 'S': False, 'W': False, 'item': None}, 'gate': 'B', 'new_position': 8}
+2023-04-28 12:06:40,945:WARNING:samir VS ammar:ammar unavailable (Connection lost). Wait for 3 seconds
+2023-04-28 12:06:58,779:WARNING:samir VS ammar:ammar unavailable (Unable to Open Connection to 127.0.0.1:8889). Wait for 3 seconds
+2023-04-28 12:07:16,578:WARNING:samir VS ammar:ammar unavailable (Unable to Open Connection to 127.0.0.1:8889). Wait for 3 seconds
+2023-04-28 12:07:19,645:WARNING:samir VS ammar:ammar has done too many Bad Moves
+2023-04-28 12:07:19,645:INFO:samir VS ammar:Match Done. samir Won

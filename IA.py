@@ -72,17 +72,17 @@ class ServerAI:
         logging.info("Player %s: response send to %s", self.player_name, self.game_server)    
     
     def get_response(self,connection):
-        connection.settimeout(0.1)
+        data = None
         chunks = []
         finished = False
         while not finished:
+            chunks.append(connection.recv(2048))
             try:
-                data = connection.recv(4096)
-                chunks.append(data)
-                finished = data == b''
-            except socket.timeout:
-                break
-        return b''.join(chunks).decode() 
+                data = json.loads(b''.join(chunks).decode())
+                finished = True
+            except json.decoder.JSONDecodeError:
+                continue
+        return data
 
     def get_move_response(self, AI_move):
          response = json.dumps({"response": "move", "move": AI_move, "message": "i will win"}).encode()
@@ -97,9 +97,9 @@ class ServerAI:
     
         while True:
                 con, addr = s2.accept()
-                #d = con.recv(4096).decode()
-                d = self.get_response(con)
-                request = self.convert_to_dict(d)
+                # d = con.recv(4096).decode()
+                request = self.get_response(con)
+                # request = self.convert_to_dict(d)
                 logging.info("Player %s: got request %s", self.player_name, request["request"])
                 if request["request"] == "ping":
                     response = self.get_ping_response()
@@ -439,35 +439,36 @@ class AI:
 
 
 
-board = [{"N": False, "E": True, "S": True, "W": False, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": False, "E": True, "S": True, "W": True, "item": 0}, {"N": False, "E": True, "S": True, "W": False, "item": 14}, {"N": False, "E": True, "S": True, "W": True, "item": 1}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": False, "E": False, "S": True, "W": True, "item": None},
-        {"N": False, "E": False, "S": True, "W": True, "item": 15}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None},
-        {"N": True, "E": True, "S": True, "W": False, "item": 2}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": True, "W": False, "item": 3}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": False, "E": True, "S": True, "W": True, "item": 4}, {"N": False, "E": True, "S": True, "W": True, "item": 23}, {"N": True, "E": False, "S": True, "W": True, "item": 5},
-        {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": False, "E": True, "S": True, "W": True, "item": 22}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": True, "W": True, "item": 19}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": 17}, {"N": True, "E": False, "S": False, "W": True, "item": None},
-        {"N": True, "E": True, "S": True, "W": False, "item": 6}, {"N": True, "E": True, "S": False, "W": False, "item": 16}, {"N": True, "E": True, "S": False, "W": True, "item": 7}, {"N": True, "E": True, "S": False, "W": False, "item": 12}, {"N": True, "E": False, "S": True, "W": True, "item": 8}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": True, "W": True, "item": 6},
-        {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": True, "W": False, "item": 21}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": True, "item": 20},
-        {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": False, "E": True, "S": True, "W": False, "item": None}, {"N": True, "E": True, "S": False, "W": True, "item": 10}, {"N": False, "E": True, "S": True, "W": False, "item": 13}, {"N": True, "E": True, "S": False, "W": True, "item": 11}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": None}]
+# board = [{"N": False, "E": True, "S": True, "W": False, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": False, "E": True, "S": True, "W": True, "item": 0}, {"N": False, "E": True, "S": True, "W": False, "item": 14}, {"N": False, "E": True, "S": True, "W": True, "item": 1}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": False, "E": False, "S": True, "W": True, "item": None},
+#         {"N": False, "E": False, "S": True, "W": True, "item": 15}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None},
+#         {"N": True, "E": True, "S": True, "W": False, "item": 2}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": True, "W": False, "item": 3}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": False, "E": True, "S": True, "W": True, "item": 4}, {"N": False, "E": True, "S": True, "W": True, "item": 23}, {"N": True, "E": False, "S": True, "W": True, "item": 5},
+#         {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": False, "E": True, "S": True, "W": True, "item": 22}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": True, "W": True, "item": 19}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": 17}, {"N": True, "E": False, "S": False, "W": True, "item": None},
+#         {"N": True, "E": True, "S": True, "W": False, "item": 6}, {"N": True, "E": True, "S": False, "W": False, "item": 16}, {"N": True, "E": True, "S": False, "W": True, "item": 7}, {"N": True, "E": True, "S": False, "W": False, "item": 12}, {"N": True, "E": False, "S": True, "W": True, "item": 8}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": True, "W": True, "item": 6},
+#         {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": True, "W": False, "item": 21}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": True, "item": 20},
+#         {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": False, "E": True, "S": True, "W": False, "item": None}, {"N": True, "E": True, "S": False, "W": True, "item": 10}, {"N": False, "E": True, "S": True, "W": False, "item": 13}, {"N": True, "E": True, "S": False, "W": True, "item": 11}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": None}]
 
 
 
-state = {"players": ["player1", "player2"], "current": 0, "positions": [0, 48], "board": [{"N": False, "E": True, "S": True, "W": False, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": 17}, {"N": False, "E": True, "S": True, "W": True, "item": 0}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": 
-False, "E": True, "S": True, "W": True, "item": 1}, {"N": False, "E": False, 
-"S": True, "W": True, "item": 16}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": False, "E": True, "S": True, "W": True, "item": 18}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": False, 
-"E": True, "S": False, "W": True, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": 12}, {"N": True, "E": True, "S": True, "W": False, "item": 2}, {"N": False, "E": False, "S": True, "W": True, "item": 13}, {"N": True, "E": True, "S": True, "W": False, "item": 3}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": 
-False, "E": True, "S": True, "W": True, "item": 4}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": True, "W": 
-True, "item": 5}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": True, "item": 23}, {"N": True, "E": False, "S": True, "W": True, "item": 21}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": True, "W": False, "item": 6}, {"N": True, "E": True, "S": False, 
-"W": False, "item": 14}, {"N": True, "E": True, "S": False, "W": True, "item": 7}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": True, "W": True, "item": 8}, {"N": True, "E": True, "S": 
-False, "W": True, "item": 20}, {"N": True, "E": False, "S": True, "W": True, 
-"item": 9}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": 15}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": True, "E": True, "S": True, "W": False, "item": 22}, {"N": True, "E": True, "S": False, "W": True, "item": 10}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": True, "S": False, "W": True, "item": 11}, {"N": False, "E": True, "S": True, "W": True, "item": 19}, {"N": True, "E": False, "S": False, "W": True, "item": None}], "tile": {"N": True, "E": False, "S": True, "W": False, "item": None}, "target": 17, "remaining": [4, 4]}
+# state = {"players": ["player1", "player2"], "current": 0, "positions": [0, 48], "board": [{"N": False, "E": True, "S": True, "W": False, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": 17}, {"N": False, "E": True, "S": True, "W": True, "item": 0}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": 
+# False, "E": True, "S": True, "W": True, "item": 1}, {"N": False, "E": False, 
+# "S": True, "W": True, "item": 16}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": False, "E": True, "S": True, "W": True, "item": 18}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": False, 
+# "E": True, "S": False, "W": True, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": 12}, {"N": True, "E": True, "S": True, "W": False, "item": 2}, {"N": False, "E": False, "S": True, "W": True, "item": 13}, {"N": True, "E": True, "S": True, "W": False, "item": 3}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": 
+# False, "E": True, "S": True, "W": True, "item": 4}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": True, "W": 
+# True, "item": 5}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": True, "item": 23}, {"N": True, "E": False, "S": True, "W": True, "item": 21}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": True, "E": True, "S": True, "W": False, "item": 6}, {"N": True, "E": True, "S": False, 
+# "W": False, "item": 14}, {"N": True, "E": True, "S": False, "W": True, "item": 7}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": True, "E": False, "S": True, "W": True, "item": 8}, {"N": True, "E": True, "S": 
+# False, "W": True, "item": 20}, {"N": True, "E": False, "S": True, "W": True, 
+# "item": 9}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": True, "E": False, "S": False, "W": True, "item": None}, {"N": False, "E": True, "S": False, "W": True, "item": None}, {"N": False, "E": False, "S": True, "W": True, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": True, "E": True, "S": False, "W": False, "item": 15}, {"N": True, "E": True, "S": False, "W": False, "item": None}, {"N": True, "E": True, "S": True, "W": False, "item": 22}, {"N": True, "E": True, "S": False, "W": True, "item": 10}, {"N": True, "E": False, "S": True, "W": False, "item": None}, {"N": True, "E": True, "S": False, "W": True, "item": 11}, {"N": False, "E": True, "S": True, "W": True, "item": 19}, {"N": True, "E": False, "S": False, "W": True, "item": None}], "tile": {"N": True, "E": False, "S": True, "W": False, "item": None}, "target": 17, "remaining": [4, 4]}
 
 
 
-player3 = AI(board)
-print(player3.play(state))
+# player3 = AI(board)
+# print(player3.play(state))
 
-'''
-player1 = ServerAI(("localhost", 3000), 8888, "localhost", "samir", 20053)
-player2 = ServerAI(("localhost", 3000), 8889, "localhost", "ammar", 0000)
-thread = threading.Thread(target=player1.run_server_AI, daemon=True)
-thread.start()
-player2.run_server_AI()
-'''
+
+player1 = ServerAI(("193.190.63.201", 3000), 8888, "localhost", "samir", 20053)
+# player2 = ServerAI(("localhost", 3000), 8889, "localhost", "ammar", 0000)
+# thread = threading.Thread(target=player1.run_server_AI, daemon=True)
+# thread.start()
+player1.run_server_AI()
+
+# C:/Users/Baptiste/AppData/Local/Programs/Python/Python39/python.exe "c:/Users/Baptiste/Desktop/git repo 1/PI2CChampionshipRunner/server.py" labyrinthe
