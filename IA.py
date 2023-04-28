@@ -462,7 +462,7 @@ False, "W": True, "item": 20}, {"N": True, "E": False, "S": True, "W": True,
 
 
 player3 = AI(board)
-print(player3.play("state"))
+print(player3.play(state))
 
 '''
 player1 = ServerAI(("localhost", 3000), 8888, "localhost", "samir", 20053)
